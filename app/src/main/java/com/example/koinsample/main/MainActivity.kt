@@ -9,13 +9,12 @@ import com.example.koinsample.databinding.ActivityMainBinding
 import com.example.koinsample.repository.Controller
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
-import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.debug
 import org.jetbrains.anko.toast
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MainActivity : ScopedAppActivity(), AnkoLogger {
+class MainActivity : ScopedAppActivity() {
 
     private val controller: Controller by inject()
     private val myViewModel: MainViewModel by viewModel()
@@ -50,7 +49,8 @@ class MainActivity : ScopedAppActivity(), AnkoLogger {
         }
     }
 
-    private fun asyncShowCountDown() = launch(Dispatchers.Main) {
+    // 기본 Main Thread (ScopedAppActivity)
+    private fun asyncShowCountDown() = launch {
         for (i in 10 downTo 1) {
             countDownTextView.text = "카운트다운 $i ..."
             delay(500)
@@ -59,6 +59,7 @@ class MainActivity : ScopedAppActivity(), AnkoLogger {
     }
 
     private suspend fun showIOData() {
+        // Background Thread
         val deferred = async(Dispatchers.IO) {
             // impl
             repeat(15) {
@@ -67,6 +68,7 @@ class MainActivity : ScopedAppActivity(), AnkoLogger {
             }
             100
         }
+        // UI Thread
         withContext(Dispatchers.Main) {
             val data = deferred.await()
             // Show data in UI

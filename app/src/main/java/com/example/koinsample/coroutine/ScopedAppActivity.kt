@@ -5,9 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import org.jetbrains.anko.AnkoLogger
 import kotlin.coroutines.CoroutineContext
 
-abstract class ScopedAppActivity: AppCompatActivity(), CoroutineScope {
+abstract class ScopedAppActivity: AppCompatActivity(), CoroutineScope, AnkoLogger {
     protected lateinit var job: Job
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main
