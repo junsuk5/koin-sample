@@ -27,8 +27,8 @@ class MainActivity : ScopedAppActivity() {
 
     private val binding: ActivityMainBinding by lazy {
         DataBindingUtil.setContentView<ActivityMainBinding>(
-                this@MainActivity,
-                R.layout.activity_main
+            this@MainActivity,
+            R.layout.activity_main
         )
     }
 
@@ -63,23 +63,26 @@ class MainActivity : ScopedAppActivity() {
         }
     }
 
-    class MyAdapter(private val myDataset: List<DummyData>,
-                    val onItemClickListener: (data: DummyData, pos: Int) -> Unit) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+    class MyAdapter(
+        private val myDataset: List<DummyData>,
+        private val onItemClickListener: (data: DummyData, pos: Int) -> Unit
+    ) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
         class MyViewHolder(val binding: ItemRecyclerBinding) : RecyclerView.ViewHolder(binding.root)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_recycler, parent, false)
-            return MyViewHolder(ItemRecyclerBinding.bind(view))
+                .inflate(R.layout.item_recycler, parent, false)
+            val viewHolder = MyViewHolder(ItemRecyclerBinding.bind(view))
+            viewHolder.binding.root.setOnClickListener {
+                onItemClickListener.invoke(myDataset[viewHolder.adapterPosition], viewHolder.adapterPosition)
+            }
+            return viewHolder
         }
 
         override fun getItemCount() = myDataset.size
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
             holder.binding.data = myDataset[position]
-            holder.binding.root.setOnClickListener {
-                onItemClickListener.invoke(myDataset[position], position)
-            }
         }
     }
 
